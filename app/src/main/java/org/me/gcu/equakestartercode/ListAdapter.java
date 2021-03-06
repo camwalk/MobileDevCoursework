@@ -9,11 +9,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import org.me.gcu.equakestartercode.Earthquake;
-import org.me.gcu.equakestartercode.R;
-
 import java.util.ArrayList;
-import java.util.List;
 
 public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
     ArrayList<Earthquake> earthquakes;
@@ -28,7 +24,7 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
     @NonNull
     @Override
     public ListAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        // Inflating the Layout(Instantiates list_item.xml
+        // Inflating the Layout(Instantiates list_row.xml
         // layout file into View object)
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_row, parent, false);
 
@@ -41,9 +37,14 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull ListAdapter.ViewHolder holder, int position) {
         // TypeCast Object to int type
-        holder.title.setText(earthquakes.get(position).getTitle());
-        holder.latitude.setText(earthquakes.get(position).getTitle());
-        holder.longitude.setText(earthquakes.get(position).getTitle());
+        String fullTitle = earthquakes.get(position).getTitle();
+        String fullDescription = earthquakes.get(position).getDescription();
+        String date = earthquakes.get(position).getDate();
+        String[] splitTitle = fullTitle.split(" ");
+        String[] splitDescription = fullDescription.split(";");
+        holder.location.setText(splitDescription[1]);
+        holder.magnitude.setText("Magnitude: " + splitTitle[6]);
+        holder.date.setText("Date/Time: " + date);
     }
 
     @Override
@@ -55,15 +56,15 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
 
     // Initializing the Views
     public class ViewHolder extends RecyclerView.ViewHolder {
-        TextView title;
-        TextView latitude;
-        TextView longitude;
+        TextView location;
+        TextView magnitude;
+        TextView date;
 
         public ViewHolder(View view) {
             super(view);
-            title = (TextView) view.findViewById(R.id.textTitle);
-            latitude = (TextView) view.findViewById(R.id.textLatitude);
-            longitude = (TextView) view.findViewById(R.id.textLongitude);
+            location = (TextView) view.findViewById(R.id.textLocation);
+            magnitude = (TextView) view.findViewById(R.id.textMagnitude);
+            date = (TextView) view.findViewById(R.id.textDate);
         }
     }
 }

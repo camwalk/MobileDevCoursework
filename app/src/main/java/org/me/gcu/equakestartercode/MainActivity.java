@@ -4,14 +4,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.Adapter;
 import android.widget.Button;
-import android.widget.TextView;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -20,7 +19,6 @@ import java.io.StringReader;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
-import java.util.List;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -41,7 +39,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener
         setContentView(R.layout.activity_main);
         Log.e("MyTag","in onCreate");
         // Set up the raw links to the graphical components
-        startButton = findViewById(R.id.startButton);
+        startButton = findViewById(R.id.mapButton);
         recyclerView = findViewById(R.id.earthquakeList);
         startButton.setOnClickListener(this);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getApplicationContext());
@@ -76,7 +74,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener
                         earthquake.setDescription(xpp.nextText());
                     } else if (xpp.getName().equals("link")) {
                         earthquake.setLink(xpp.nextText());
-                    } else if (xpp.getName().equals("date")) {
+                    } else if (xpp.getName().equals("pubDate")) {
                         earthquake.setDate(xpp.nextText());
                     } else if (xpp.getName().equals("category")) {
                         earthquake.setCategory(xpp.nextText());
@@ -105,7 +103,10 @@ public class MainActivity extends AppCompatActivity implements OnClickListener
 
     public void onClick(View aview)
     {
-        setContentView(R.layout.earthquake_list);
+        Intent intent = new Intent(MainActivity.this,
+                MapActivity.class);
+        startActivity(intent);
+        setContentView(R.layout.earthquake_map);
     }
 
     public void startProgress()
