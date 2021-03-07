@@ -15,6 +15,7 @@ import android.widget.Button;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.Serializable;
 import java.io.StringReader;
 import java.net.URL;
 import java.net.URLConnection;
@@ -31,6 +32,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener
     private String url1="";
     private String urlSource="http://quakes.bgs.ac.uk/feeds/MhSeismology.xml";
     private RecyclerView recyclerView;
+    public ArrayList<Earthquake> earthquakeList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -50,7 +52,6 @@ public class MainActivity extends AppCompatActivity implements OnClickListener
     }
 
     public void parseData(String result) {
-        ArrayList<Earthquake> earthquakeList = new ArrayList<>();
         try {
             XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
             factory.setNamespaceAware(true);
@@ -72,6 +73,8 @@ public class MainActivity extends AppCompatActivity implements OnClickListener
                         earthquake.setTitle(xpp.nextText());
                     } else if (xpp.getName().equals("description")) {
                         earthquake.setDescription(xpp.nextText());
+                        String fullDesc = earthquake.getDescription();
+                        earthquake.setMagntitude(fullDesc.substring(fullDesc.length()-3));
                     } else if (xpp.getName().equals("link")) {
                         earthquake.setLink(xpp.nextText());
                     } else if (xpp.getName().equals("pubDate")) {
@@ -105,6 +108,9 @@ public class MainActivity extends AppCompatActivity implements OnClickListener
     {
         Intent intent = new Intent(MainActivity.this,
                 MapActivity.class);
+        Bundle args = new Bundle();
+        args.putSerializable("EARTHQUAKELIST", (Serializable) earthquakeList);
+        intent.putExtra("BUNDLE", args);
         startActivity(intent);
         setContentView(R.layout.earthquake_map);
     }

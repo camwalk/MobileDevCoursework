@@ -37,13 +37,12 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull ListAdapter.ViewHolder holder, int position) {
         // TypeCast Object to int type
-        String fullTitle = earthquakes.get(position).getTitle();
-        String fullDescription = earthquakes.get(position).getDescription();
+        String fullDesc = earthquakes.get(position).getDescription();
+        String[] splitDesc = fullDesc.split(";");
+        String magnitude = earthquakes.get(position).getMagntitude();
         String date = earthquakes.get(position).getDate();
-        String[] splitTitle = fullTitle.split(" ");
-        String[] splitDescription = fullDescription.split(";");
-        holder.location.setText(splitDescription[1]);
-        holder.magnitude.setText("Magnitude: " + splitTitle[6]);
+        holder.location.setText(splitDesc[1]);
+        holder.magnitude.setText("Magnitude: " + magnitude);
         holder.date.setText("Date/Time: " + date);
     }
 

@@ -1,8 +1,9 @@
 package org.me.gcu.equakestartercode;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class Earthquake {
+public class Earthquake implements Serializable {
     private String Title;
     private String Description;
     private String Link;
@@ -10,6 +11,16 @@ public class Earthquake {
     private String Category;
     private String Latitude;
     private String Longitude;
+
+    public String getMagntitude() {
+        return Magntitude;
+    }
+
+    public void setMagntitude(String magntitude) {
+        Magntitude = magntitude;
+    }
+
+    private String Magntitude;
 
     public String getTitle() {
         return Title;
