@@ -15,6 +15,8 @@ package org.me.gcu.equakestartercode;// Copyright 2020 Google LLC
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
@@ -28,6 +30,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 import static java.lang.Integer.parseInt;
@@ -35,6 +38,7 @@ import static java.lang.Integer.parseInt;
 public class MapActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
+    private Button returnButton;
     ArrayList<Earthquake> earthquakeList = new ArrayList<>();
 
     @Override
@@ -48,6 +52,16 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         Intent intent = getIntent();
         Bundle args = intent.getBundleExtra("BUNDLE");
         earthquakeList = (ArrayList<Earthquake>) args.getSerializable("EARTHQUAKELIST");
+        returnButton = findViewById(R.id.returnButton);
+        returnButton.setOnClickListener(this::onClick);
+    }
+
+    public void onClick(View aview)
+    {
+        Intent intent = new Intent(MapActivity.this,
+                MapActivity.class);
+        startActivity(intent);
+        setContentView(R.layout.activity_main);
     }
 
     /**
@@ -65,6 +79,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
+        //add earthquake pin, with color based on magnitude
         earthquakeList.forEach((e) -> {
             LatLng position = new LatLng(Double.parseDouble(e.getLatitude()),Double.parseDouble(e.getLongitude()));
             String fullDesc = e.getDescription();
