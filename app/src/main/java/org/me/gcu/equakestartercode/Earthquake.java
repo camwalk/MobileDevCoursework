@@ -12,6 +12,16 @@ public class Earthquake implements Serializable {
     private String Latitude;
     private String Longitude;
 
+    public String getDepth() {
+        return Depth;
+    }
+
+    public void setDepth(String depth) {
+        Depth = depth;
+    }
+
+    private String Depth;
+
     public String getMagntitude() {
         return Magntitude;
     }

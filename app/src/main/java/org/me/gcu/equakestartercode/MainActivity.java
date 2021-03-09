@@ -25,9 +25,10 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
 
-public class MainActivity extends AppCompatActivity implements OnClickListener
+public class MainActivity extends AppCompatActivity
 {
     private Button startButton;
+    private Button filterButton;
     private String result = "";
     private String url1="";
     private String urlSource="http://quakes.bgs.ac.uk/feeds/MhSeismology.xml";
@@ -42,8 +43,10 @@ public class MainActivity extends AppCompatActivity implements OnClickListener
         Log.e("MyTag","in onCreate");
         // Set up the raw links to the graphical components
         startButton = findViewById(R.id.mapButton);
+        filterButton = findViewById(R.id.filterButton);
         recyclerView = findViewById(R.id.earthquakeList);
-        startButton.setOnClickListener(this);
+        startButton.setOnClickListener(this::onClickMap);
+        filterButton.setOnClickListener(this::onClickFilter);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(linearLayoutManager);
         startProgress();
@@ -74,6 +77,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener
                     } else if (xpp.getName().equals("description")) {
                         earthquake.setDescription(xpp.nextText());
                         String fullDesc = earthquake.getDescription();
+                        String[] splitDesc = fullDesc.split(";");
                         earthquake.setMagntitude(fullDesc.substring(fullDesc.length()-3));
                     } else if (xpp.getName().equals("link")) {
                         earthquake.setLink(xpp.nextText());
@@ -88,12 +92,15 @@ public class MainActivity extends AppCompatActivity implements OnClickListener
                     }
                 } else if (eventType == XmlPullParser.END_TAG) {
                     if (xpp.getName().equals("item")) {
+                        String fullDesc = earthquake.getDescription();
+                        String[] splitDesc = fullDesc.split(";");
+                        String depth = splitDesc[3].substring(8, splitDesc[3].length()-4);
+                        earthquake.setDepth(depth);
                         earthquakeList.add(earthquake);
                     }
                 }
                 eventType = xpp.next();
             }
-            Log.e("MyTag",earthquakeList.toString());
         } catch (XmlPullParserException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -104,7 +111,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener
         recyclerView.setAdapter(adapter);
     }
 
-    public void onClick(View aview)
+    public void onClickMap(View aview)
     {
         Intent intent = new Intent(MainActivity.this,
                 MapActivity.class);
@@ -113,6 +120,17 @@ public class MainActivity extends AppCompatActivity implements OnClickListener
         intent.putExtra("BUNDLE", args);
         startActivity(intent);
         setContentView(R.layout.earthquake_map);
+    }
+
+    public void onClickFilter(View aview)
+    {
+        Intent intent = new Intent(MainActivity.this,
+                FilterActivity.class);
+        Bundle args = new Bundle();
+        args.putSerializable("EARTHQUAKELIST", (Serializable) earthquakeList);
+        intent.putExtra("BUNDLE", args);
+        startActivity(intent);
+        setContentView(R.layout.activity_filter);
     }
 
     public void startProgress()
