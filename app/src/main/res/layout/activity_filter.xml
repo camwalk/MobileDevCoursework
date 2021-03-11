@@ -10,11 +10,11 @@
         android:id="@+id/submitButton"
         android:layout_width="271dp"
         android:layout_height="45dp"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="8dp"
         android:text="Submit"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/secondDateText" />
+        app:layout_constraintTop_toBottomOf="@+id/start_date" />
 
     <Button
         android:id="@+id/largestMagnitudeButton"
@@ -43,7 +43,9 @@
         android:layout_marginTop="16dp"
         android:text="Sort By"
         android:textSize="24sp"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/submitButton" />
 
@@ -107,41 +109,41 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
-        android:id="@+id/firstDateText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="52dp"
-        android:ems="10"
-        android:inputType="textPersonName"
+        android:id="@+id/start_date"
+        android:layout_width="196dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="16dp"
+        android:focusable="false"
+        android:hint="Please pick a date"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/textView"
-        app:layout_constraintTop_toBottomOf="@+id/returnButton2" />
+        app:layout_constraintHorizontal_bias="0.177"
+        app:layout_constraintStart_toEndOf="@+id/textView2"
+        app:layout_constraintTop_toBottomOf="@+id/end_date" />
+
 
     <TextView
         android:id="@+id/textView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="84dp"
-        android:layout_marginTop="124dp"
+        android:layout_marginTop="120dp"
         android:text="To:"
         android:textSize="18sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/returnButton2" />
 
     <EditText
-        android:id="@+id/secondDateText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="20dp"
-        android:ems="10"
-        android:inputType="textPersonName"
+        android:id="@+id/end_date"
+        android:layout_width="196dp"
+        android:layout_height="42dp"
+        android:layout_below="@id/start_date"
+        android:layout_marginTop="16dp"
+        android:focusable="false"
+        android:hint="Please pick a date"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.025"
-        app:layout_constraintStart_toEndOf="@+id/textView2"
-        app:layout_constraintTop_toBottomOf="@+id/firstDateText" />
+        app:layout_constraintHorizontal_bias="0.201"
+        app:layout_constraintStart_toEndOf="@+id/textView"
+        app:layout_constraintTop_toBottomOf="@+id/searchTitleText" />
 
     <TextView
         android:id="@+id/textView"
@@ -161,6 +163,7 @@
         android:layout_marginTop="8dp"
         android:text="Filter Date"
         android:textSize="24sp"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/returnButton2" />

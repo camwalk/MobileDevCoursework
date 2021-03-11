@@ -12,12 +12,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-
 import java.io.Serializable;
 import java.util.ArrayList;
-
-import static java.security.AccessController.getContext;
 
 public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
     ArrayList<Earthquake> earthquakes;
