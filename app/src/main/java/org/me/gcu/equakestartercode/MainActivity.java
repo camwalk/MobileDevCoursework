@@ -40,8 +40,6 @@ public class MainActivity extends AppCompatActivity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Log.e("MyTag","in onCreate");
-        // Set up the raw links to the graphical components
         startButton = findViewById(R.id.mapButton);
         filterButton = findViewById(R.id.filterButton);
         recyclerView = findViewById(R.id.earthquakeList);
@@ -50,8 +48,6 @@ public class MainActivity extends AppCompatActivity
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(linearLayoutManager);
         startProgress();
-        Log.e("MyTag","after startProgress");
-        // More Code goes here
     }
 
     public void parseData(String result) {
@@ -67,7 +63,6 @@ public class MainActivity extends AppCompatActivity
 
             while (eventType != XmlPullParser.END_DOCUMENT) {
                 if (eventType == XmlPullParser.START_DOCUMENT) {
-                    System.out.println("Started");
                 } else if (eventType == XmlPullParser.START_TAG) {
                     if (xpp.getName().equals("item")) {
                         earthquake = new Earthquake();
@@ -102,7 +97,7 @@ public class MainActivity extends AppCompatActivity
                 eventType = xpp.next();
             }
         } catch (XmlPullParserException e) {
-            e.printStackTrace();
+
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -157,15 +152,11 @@ public class MainActivity extends AppCompatActivity
             BufferedReader in = null;
             String inputLine = "";
 
-            Log.e("MyTag","in run");
-
             try
             {
-                Log.e("MyTag","in try");
                 aurl = new URL(url);
                 yc = aurl.openConnection();
                 in = new BufferedReader(new InputStreamReader(yc.getInputStream()));
-                Log.e("MyTag","after ready");
                 //
                 // Throw away the first 2 header lines before parsing
                 //
@@ -174,7 +165,6 @@ public class MainActivity extends AppCompatActivity
                 while ((inputLine = in.readLine()) != null)
                 {
                     result = result + inputLine;
-                    Log.e("MyTag",inputLine);
                 }
                 in.close();
             }
@@ -194,7 +184,6 @@ public class MainActivity extends AppCompatActivity
             MainActivity.this.runOnUiThread(new Runnable()
             {
                 public void run() {
-                    Log.d("UI thread", "I am the UI thread");
                     parseData(result);
                 }
             });

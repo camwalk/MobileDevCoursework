@@ -13,7 +13,8 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.EQuakeStarterCode"
         android:usesCleartextTraffic="true">
-        <activity android:name=".FilterActivity"></activity>
+        <activity android:name=".FilteredMainActivity"></activity>
+        <activity android:name=".FilterActivity" />
         <!--
                Set to true if your app is Standalone, that is, it does not require the handheld
                app to run.

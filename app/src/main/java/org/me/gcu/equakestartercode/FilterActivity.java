@@ -4,6 +4,7 @@ package org.me.gcu.equakestartercode;
 import android.app.ActivityManager;
 import android.app.DatePickerDialog;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -12,12 +13,17 @@ import android.widget.EditText;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 
 import static org.me.gcu.equakestartercode.DatePickerClass.FLAG_END_DATE;
 import static org.me.gcu.equakestartercode.DatePickerClass.FLAG_START_DATE;
@@ -37,13 +43,26 @@ public class FilterActivity extends AppCompatActivity implements
     private EditText mStartTime;
     private EditText mEndTime;
     private DatePickerClass mDatePicker;
+    Double largestMagnitude = 0.0;
+    Double deepest = 0.0;
+    Double shallowest = 0.0;
+    Double mostNorthern = 0.0;
+    Double mostEastern = 0.0;
+    Double mostSouthern = 0.0;
+    Double mostWestern = 0.0;
     ArrayList<Earthquake> earthquakeList = new ArrayList<>();
+    ArrayList<Earthquake> narrowedList = new ArrayList<>();
+    ArrayList<Earthquake> newList = new ArrayList<>(7);
 
     @NonNull
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_filter);
+
+        Intent intent = getIntent();
+        Bundle args = intent.getBundleExtra("BUNDLE");
+        earthquakeList = (ArrayList<Earthquake>) args.getSerializable("EARTHQUAKELIST");
 
         mStartTime = (EditText) findViewById(R.id.start_date);
         mEndTime = (EditText) findViewById(R.id.end_date);
@@ -56,20 +75,20 @@ public class FilterActivity extends AppCompatActivity implements
         returnButton.setOnClickListener(this::onClickReturn);
         submitButton = findViewById(R.id.submitButton);
         submitButton.setOnClickListener(this::onClickSubmit);
-        largestMagnitudeButton = findViewById(R.id.largestMagnitudeButton);
-        largestMagnitudeButton.setOnClickListener(this::onClickMagnitude);
-        deepestButton = findViewById(R.id.deepestButton);
-        deepestButton.setOnClickListener(this::onClickDeepest);
-        shallowestButton = findViewById(R.id.shallowestButton);
-        shallowestButton.setOnClickListener(this::onClickShallowest);
-        northernButton = findViewById(R.id.northernButton);
-        northernButton.setOnClickListener(this::onClickNorthern);
-        easternButton = findViewById(R.id.easternButton);
-        easternButton.setOnClickListener(this::onClickReturn);
-        southernButton = findViewById(R.id.southernButton);
-        southernButton.setOnClickListener(this::onClickSouthern);
-        westernButton = findViewById(R.id.westernButton);
-        westernButton.setOnClickListener(this::onClickWestern);
+//        largestMagnitudeButton = findViewById(R.id.largestMagnitudeButton);
+//        largestMagnitudeButton.setOnClickListener(this::onClickMagnitude);
+//        deepestButton = findViewById(R.id.deepestButton);
+//        deepestButton.setOnClickListener(this::onClickDeepest);
+//        shallowestButton = findViewById(R.id.shallowestButton);
+//        shallowestButton.setOnClickListener(this::onClickShallowest);
+//        northernButton = findViewById(R.id.northernButton);
+//        northernButton.setOnClickListener(this::onClickNorthern);
+//        easternButton = findViewById(R.id.easternButton);
+//        easternButton.setOnClickListener(this::onClickReturn);
+//        southernButton = findViewById(R.id.southernButton);
+//        southernButton.setOnClickListener(this::onClickSouthern);
+//        westernButton = findViewById(R.id.westernButton);
+//        westernButton.setOnClickListener(this::onClickWestern);
     }
 
     public void onClickDate(View v) {
@@ -94,26 +113,68 @@ public class FilterActivity extends AppCompatActivity implements
         }
     }
 
-    private void onClickWestern(View view) {
-    }
-
-    private void onClickSouthern(View view) {
-    }
-
-    private void onClickNorthern(View view) {
-    }
-
-    private void onClickShallowest(View view) {
-    }
-
-    private void onClickDeepest(View view) {
-    }
-
-    private void onClickMagnitude(View view) {
-    }
-
+    @RequiresApi(api = Build.VERSION_CODES.N)
     private void onClickSubmit(View view) {
+        if(mStartTime != null && mEndTime != null) {
+            earthquakeList.forEach(e -> {
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                    LocalDate startTime = LocalDate.parse(mStartTime.getText());
+                    LocalDate endTime = LocalDate.parse(mEndTime.getText());
+                    DateTimeFormatter formatterForEnteredDate = DateTimeFormatter.ofPattern("dd MMM yyyy");
+                    String[] splitDate = e.getDate().split(" ");
+                    String fullDate = (splitDate[1] + " " + splitDate[2] + " " + splitDate[3]);
+                    LocalDate earthquakeTime = LocalDate.parse(fullDate, formatterForEnteredDate);
+                    if(startTime.compareTo(earthquakeTime) * earthquakeTime.compareTo(endTime) >= 0) {
+                        narrowedList.add(e);
+                    }
+                }
+            });
+        }
+        for (int i = 0; i < 7; i++) {
+            narrowedList.add(earthquakeList.get(1));
+        }
+        narrowedList.forEach(e -> {
+            if (Double.parseDouble(e.getMagntitude()) > largestMagnitude) {
+                largestMagnitude = Double.parseDouble(e.getMagntitude());
+                newList.add(0, e);
+            }
+            if (Double.parseDouble(e.getDepth()) > deepest) {
+                deepest = Double.parseDouble(e.getDepth());
+                newList.add(1, e);
+            }
+            if (Double.parseDouble(e.getDepth()) < shallowest) {
+                shallowest = Double.parseDouble(e.getDepth());
+                newList.add(2, e);
+            }
+            if (Double.parseDouble(e.getLatitude()) > mostNorthern) {
+                mostNorthern = Double.parseDouble(e.getLatitude());
+                newList.add(3, e);
+            }
+            if (Double.parseDouble(e.getLongitude()) > mostEastern) {
+                mostEastern = Double.parseDouble(e.getLatitude());
+                newList.add(4, e);
+            }
+            if (Double.parseDouble(e.getLatitude()) < mostSouthern) {
+                mostSouthern = Double.parseDouble(e.getLatitude());
+                newList.add(5, e);
+            }
+            if (Double.parseDouble(e.getLongitude()) < mostWestern) {
+                mostWestern = Double.parseDouble(e.getLatitude());
+                newList.add(6, e);
+            }
+        });
+        System.out.println(newList);
+        nextPage();
+    }
 
+    private void nextPage() {
+        Intent intent = new Intent(FilterActivity.this,
+                FilteredMainActivity.class);
+        Bundle args = new Bundle();
+        args.putSerializable("EARTHQUAKELIST", (Serializable) newList);
+        intent.putExtra("BUNDLE", args);
+        startActivity(intent);
+        setContentView(R.layout.activity_filtered_main);
     }
 
     private void onClickReturn(View view) {
