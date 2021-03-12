@@ -1,7 +1,6 @@
 package org.me.gcu.equakestartercode;
 
 
-import android.app.ActivityManager;
 import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Build;
@@ -10,12 +9,12 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
 
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
@@ -23,7 +22,6 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 
 import static org.me.gcu.equakestartercode.DatePickerClass.FLAG_END_DATE;
 import static org.me.gcu.equakestartercode.DatePickerClass.FLAG_START_DATE;
@@ -33,26 +31,26 @@ public class FilterActivity extends AppCompatActivity implements
 
     private Button returnButton;
     private Button submitButton;
-    private Button largestMagnitudeButton;
-    private Button deepestButton;
-    private Button shallowestButton;
-    private Button northernButton;
-    private Button easternButton;
-    private Button southernButton;
-    private Button westernButton;
     private EditText mStartTime;
     private EditText mEndTime;
     private DatePickerClass mDatePicker;
     Double largestMagnitude = 0.0;
     Double deepest = 0.0;
-    Double shallowest = 0.0;
+    Double shallowest = 1000.0;
     Double mostNorthern = 0.0;
     Double mostEastern = 0.0;
-    Double mostSouthern = 0.0;
-    Double mostWestern = 0.0;
+    Double mostSouthern = 180.0;
+    Double mostWestern = 90.0;
+    Earthquake largestMag = new Earthquake();
+    Earthquake deep = new Earthquake();
+    Earthquake shallow = new Earthquake();
+    Earthquake north = new Earthquake();
+    Earthquake east = new Earthquake();
+    Earthquake south = new Earthquake();
+    Earthquake west = new Earthquake();
     ArrayList<Earthquake> earthquakeList = new ArrayList<>();
     ArrayList<Earthquake> narrowedList = new ArrayList<>();
-    ArrayList<Earthquake> newList = new ArrayList<>(7);
+    ArrayList<Earthquake> newList = new ArrayList<>();
 
     @NonNull
     @Override
@@ -73,22 +71,9 @@ public class FilterActivity extends AppCompatActivity implements
 
         returnButton = findViewById(R.id.returnButton2);
         returnButton.setOnClickListener(this::onClickReturn);
+
         submitButton = findViewById(R.id.submitButton);
         submitButton.setOnClickListener(this::onClickSubmit);
-//        largestMagnitudeButton = findViewById(R.id.largestMagnitudeButton);
-//        largestMagnitudeButton.setOnClickListener(this::onClickMagnitude);
-//        deepestButton = findViewById(R.id.deepestButton);
-//        deepestButton.setOnClickListener(this::onClickDeepest);
-//        shallowestButton = findViewById(R.id.shallowestButton);
-//        shallowestButton.setOnClickListener(this::onClickShallowest);
-//        northernButton = findViewById(R.id.northernButton);
-//        northernButton.setOnClickListener(this::onClickNorthern);
-//        easternButton = findViewById(R.id.easternButton);
-//        easternButton.setOnClickListener(this::onClickReturn);
-//        southernButton = findViewById(R.id.southernButton);
-//        southernButton.setOnClickListener(this::onClickSouthern);
-//        westernButton = findViewById(R.id.westernButton);
-//        westernButton.setOnClickListener(this::onClickWestern);
     }
 
     public void onClickDate(View v) {
@@ -106,11 +91,11 @@ public class FilterActivity extends AppCompatActivity implements
         Calendar calendar = Calendar.getInstance();
         calendar.set(year, monthOfYear, dayOfMonth);
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-        if (mDatePicker.getFlag() == FLAG_START_DATE) {
-            mStartTime.setText(format.format(calendar.getTime()));
-        } else if (mDatePicker.getFlag() == FLAG_END_DATE) {
-            mEndTime.setText(format.format(calendar.getTime()));
-        }
+            if (mDatePicker.getFlag() == FLAG_START_DATE) {
+                mStartTime.setText(format.format(calendar.getTime()));
+            } else if (mDatePicker.getFlag() == FLAG_END_DATE) {
+                mEndTime.setText(format.format(calendar.getTime()));
+            }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
@@ -130,41 +115,63 @@ public class FilterActivity extends AppCompatActivity implements
                 }
             });
         }
-        for (int i = 0; i < 7; i++) {
-            narrowedList.add(earthquakeList.get(1));
+        if(mStartTime == mEndTime){
+            earthquakeList.forEach(e -> {
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                    LocalDate startTime = LocalDate.parse(mStartTime.getText());
+                    DateTimeFormatter formatterForEnteredDate = DateTimeFormatter.ofPattern("dd MMM yyyy");
+                    String[] splitDate = e.getDate().split(" ");
+                    String fullDate = (splitDate[1] + " " + splitDate[2] + " " + splitDate[3]);
+                    LocalDate earthquakeTime = LocalDate.parse(fullDate, formatterForEnteredDate);
+                    if(startTime == earthquakeTime) {
+                        narrowedList.add(e);
+                    }
+                }
+            });
         }
+
         narrowedList.forEach(e -> {
             if (Double.parseDouble(e.getMagntitude()) > largestMagnitude) {
                 largestMagnitude = Double.parseDouble(e.getMagntitude());
-                newList.add(0, e);
+                largestMag = e;
             }
             if (Double.parseDouble(e.getDepth()) > deepest) {
                 deepest = Double.parseDouble(e.getDepth());
-                newList.add(1, e);
+                deep = e;
             }
             if (Double.parseDouble(e.getDepth()) < shallowest) {
                 shallowest = Double.parseDouble(e.getDepth());
-                newList.add(2, e);
+                shallow = e;
             }
             if (Double.parseDouble(e.getLatitude()) > mostNorthern) {
                 mostNorthern = Double.parseDouble(e.getLatitude());
-                newList.add(3, e);
+                north = e;
             }
             if (Double.parseDouble(e.getLongitude()) > mostEastern) {
-                mostEastern = Double.parseDouble(e.getLatitude());
-                newList.add(4, e);
+                mostEastern = Double.parseDouble(e.getLongitude());
+                east = e;
             }
             if (Double.parseDouble(e.getLatitude()) < mostSouthern) {
                 mostSouthern = Double.parseDouble(e.getLatitude());
-                newList.add(5, e);
+                south = e;
             }
             if (Double.parseDouble(e.getLongitude()) < mostWestern) {
-                mostWestern = Double.parseDouble(e.getLatitude());
-                newList.add(6, e);
+                mostWestern = Double.parseDouble(e.getLongitude());
+                west = e;
             }
         });
+        if(largestMagnitude != 0.0)newList.add(largestMag);
+        if(deepest != 0.0) newList.add(deep);
+        if(shallowest != 1000.0) newList.add(shallow);
+        if(mostNorthern != 0.0) newList.add(north);
+        if(mostEastern != 0.0) newList.add(east);
+        if(mostSouthern != 180.0) newList.add(south);
+        if(mostWestern != 90.0) newList.add(west);
         System.out.println(newList);
-        nextPage();
+        if(!newList.isEmpty()){nextPage();}
+        else {
+            Toast.makeText(getApplicationContext(),  "Unable to filter these dates (no earthquakes found)", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void nextPage() {
