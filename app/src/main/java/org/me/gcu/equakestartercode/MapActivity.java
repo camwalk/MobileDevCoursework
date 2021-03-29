@@ -33,6 +33,7 @@ import java.util.ArrayList;
 
 import static java.lang.Integer.parseInt;
 
+//Student ID: S1920624
 public class MapActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;

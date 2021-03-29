@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+//Student ID: S1920624
 public class DetailedActivity extends AppCompatActivity implements View.OnClickListener {
 
     private Button detailReturnView;

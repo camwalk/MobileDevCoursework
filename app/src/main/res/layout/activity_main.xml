@@ -15,17 +15,17 @@
             android:layout_height="wrap_content"
             android:text="Filter/Sort" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/earthquakeList"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
         <TextView
             android:id="@+id/acknowledgement"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:text="Contains British Geological Survey materials ©NERC 2019"
+            android:text="Contains British Geological Survey materials ©NERC 2019 Student ID: S1920624"
             android:textSize="20sp" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/earthquakeList"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
 
     </LinearLayout>
 </ScrollView>

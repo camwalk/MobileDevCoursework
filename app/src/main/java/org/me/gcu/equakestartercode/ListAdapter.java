@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.io.Serializable;
 import java.util.ArrayList;
 
+//Student ID: S1920624
 public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
     ArrayList<Earthquake> earthquakes;
     Context context;

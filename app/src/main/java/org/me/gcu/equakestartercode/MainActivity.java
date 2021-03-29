@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.Toast;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -25,6 +26,7 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
 
+//Student ID: S1920624
 public class MainActivity extends AppCompatActivity
 {
     private Button startButton;
@@ -170,7 +172,7 @@ public class MainActivity extends AppCompatActivity
             }
             catch (IOException ae)
             {
-                Log.e("MyTag", "ioexception in run");
+                Toast.makeText(getApplicationContext(),  "IOException encountered", Toast.LENGTH_SHORT).show();
             }
 
             //

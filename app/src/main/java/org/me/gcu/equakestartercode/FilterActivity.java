@@ -26,6 +26,7 @@ import java.util.Calendar;
 import static org.me.gcu.equakestartercode.DatePickerClass.FLAG_END_DATE;
 import static org.me.gcu.equakestartercode.DatePickerClass.FLAG_START_DATE;
 
+//Student ID: S1920624
 public class FilterActivity extends AppCompatActivity implements
         DatePickerDialog.OnDateSetListener{
 

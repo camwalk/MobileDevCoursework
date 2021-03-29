@@ -15,6 +15,7 @@ import org.me.gcu.equakestartercode.R;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
+//Student ID: S1920624
 public class DatePickerClass extends DialogFragment{
     public static final int FLAG_START_DATE = 0;
     public static final int FLAG_END_DATE = 1;
@@ -42,5 +43,4 @@ public class DatePickerClass extends DialogFragment{
     public int getFlag() {
         return flag;
     }
-
 }

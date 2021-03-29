@@ -3,6 +3,7 @@ package org.me.gcu.equakestartercode;
 import java.io.Serializable;
 import java.util.Date;
 
+//Student ID: S1920624
 public class Earthquake implements Serializable {
     private String Title;
     private String Description;
