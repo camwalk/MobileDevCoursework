@@ -5,6 +5,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 
 import android.util.Log;
@@ -103,9 +104,6 @@ public class MainActivity extends AppCompatActivity
         } catch (IOException e) {
             e.printStackTrace();
         }
-        //display earthquakes
-        ListAdapter adapter = new ListAdapter(MainActivity.this, earthquakeList);
-        recyclerView.setAdapter(adapter);
     }
 
     public void onClickMap(View aview)
@@ -130,65 +128,70 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_filter);
     }
 
+
     public void startProgress()
     {
         // Run network access on a separate thread;
-        new Thread(new Task(urlSource)).start();
+        new Task(urlSource).execute();
     }
 
-    // Need separate thread to access the internet resource over network
-    // Other neater solutions should be adopted in later iterations.
-    private class Task implements Runnable
+    private class Task extends  AsyncTask<String, Integer, String>
     {
+        int progress_status;
         private String url;
-
         public Task(String aurl)
         {
             url = aurl;
         }
+
         @Override
-        public void run()
-        {
-            URL aurl;
-            URLConnection yc;
-            BufferedReader in = null;
-            String inputLine = "";
+        protected String doInBackground(String... params) {
 
-            try
-            {
-                aurl = new URL(url);
-                yc = aurl.openConnection();
-                in = new BufferedReader(new InputStreamReader(yc.getInputStream()));
-                //
-                // Throw away the first 2 header lines before parsing
-                //
-                //
-                //
-                while ((inputLine = in.readLine()) != null)
+                publishProgress(progress_status);
+
+                URL aurl;
+                URLConnection yc;
+                BufferedReader in = null;
+                String inputLine = "";
+
+                try
                 {
-                    result = result + inputLine;
+                    aurl = new URL(url);
+                    yc = aurl.openConnection();
+                    in = new BufferedReader(new InputStreamReader(yc.getInputStream()));
+                    //
+                    // Throw away the first 2 header lines before parsing
+                    //
+                    //
+                    //
+                    while ((inputLine = in.readLine()) != null)
+                    {
+                        result = result + inputLine;
+                    }
+                    in.close();
                 }
-                in.close();
-            }
-            catch (IOException ae)
-            {
-                Toast.makeText(getApplicationContext(),  "IOException encountered", Toast.LENGTH_SHORT).show();
-            }
-
-            //
-            // Now that you have the xml data you can parse it
-            //
-
-            // Now update the TextView to display raw XML data
-            // Probably not the best way to update TextView
-            // but we are just getting started !
-
-            MainActivity.this.runOnUiThread(new Runnable()
-            {
-                public void run() {
-                    parseData(result);
+                catch (IOException ae)
+                {
+                    Toast.makeText(getApplicationContext(),  "IOException encountered", Toast.LENGTH_SHORT).show();
                 }
-            });
+
+                MainActivity.this.runOnUiThread(new Runnable()
+                {
+                    public void run() {
+                        parseData(result);
+                    }
+                });
+            System.out.println(result);
+            return result;
+            }
+
+        @Override
+        protected void onPostExecute(String result)
+        {
+            super.onPostExecute(result);
+            //display earthquakes
+            ListAdapter adapter = new ListAdapter(MainActivity.this, earthquakeList);
+            recyclerView.setAdapter(adapter);
         }
     }
 }
